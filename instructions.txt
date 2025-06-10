@@ -66,7 +66,9 @@ Set secure permissions
 chmod 400 ~/.ssh/my-terraform-key
 // ❗ This is critical: SSH will refuse to use keys with loose permissions.
 
-//Make changes to the terrafrom variables.tf as needed and then run the following Terraform commands:
+//Make changes to the terraform variables.tf as needed and then run the following Terraform commands:
+Do remember to make change to the file terraform.tfvars
+key_name      = "gsb-terraform-key"
 terraform init
 terraform plan
 terraform apply
