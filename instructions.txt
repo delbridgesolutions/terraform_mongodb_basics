@@ -1,0 +1,75 @@
+// In a terminal type the following commands:
+// On macOS:
+brew install awscli
+
+// On Linux (Ubuntu):
+sudo apt update
+sudo apt install awscli -y
+
+// On Windows:
+// Download and install from: https://aws.amazon.com/cli/
+
+// After installing configure AWS
+aws configure
+
+// You’ll be prompted to enter (credentials use the ones provided by Delbridge AWS account) :
+// AWS Access Key ID [None]: AKIAxxxxxxxxxxxxxxxx
+// AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYxxxxxxxxx
+// Default region name [None]: us-west-1
+// Default output format [None]: json
+
+// Where to get your Access Key ID and Secret Access Key (Ask Delbridge to set it for you):
+// STEP 1: Sign in to the AWS Management Console.
+// STEP 2: Go to IAM → Users → [Your User] → Security credentials tab.
+// STEP 3: Click “Create access key” and copy the credentials.
+
+// Verify configuration
+aws sts get-caller-identity
+
+//OUTPUT should look like:
+{
+    "UserId": "AID**S523EXFBVSUNAWEG",
+    "Account": "246****598026",
+    "Arn": "arn:aws:iam::246*****8026:user/sbgourav"
+}
+
+// Where Is It Stored?
+// The CLI stores your configuration here:
+// Credentials → ~/.aws/credentials
+// Config → ~/.aws/config
+
+// Optional: Multiple Profiles
+// If you work with multiple AWS accounts, you can configure profiles:
+// aws configure --profile dev-account
+// aws configure --profile prod-account
+
+// Use an Existing Key Pair
+// To list all your available EC2 key pairs, run the following command:
+
+aws ec2 describe-key-pairs --query 'KeyPairs[*].KeyName'
+
+// Create a New EC2 Key Pair via AWS CLI
+// This creates a key pair and saves the private key to your local machine:
+
+aws ec2 create-key-pair \
+  --key-name my-terraform-key \
+  --query 'KeyMaterial' \
+  --output text > my-terraform-key
+
+chmod 400 my-terraform-key
+
+Move it into your ~/.ssh folder
+mkdir -p ~/.ssh
+mv my-terraform-key ~/.ssh/my-terraform-key
+
+Set secure permissions
+chmod 400 ~/.ssh/my-terraform-key
+// ❗ This is critical: SSH will refuse to use keys with loose permissions.
+
+//Make changes to the terrafrom variables.tf as needed and then run the following Terraform commands:
+terraform init
+terraform plan
+terraform apply
+
+// To destroy Terraform resources type:
+terraform destroy
